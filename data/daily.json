@@ -1,0 +1,56 @@
+[
+ {
+  "date": "2026-10-26",
+  "status": "התקדמות",
+  "summary": "העולם מרונדר (יער, עצים, סלעים) כשנטען GOWRSAVE1 – הבעיה הייתה נקודת השמירה, לא הרינדור. תיקון ה-stencil נכון (לא רגרסיה). נמצא שהמשחק בונה Hi-Z מ-HTILE שהדרייבר לא ממדל (פער כללי), אבל ניסוי הראה שזה לא מה שמסתיר את הקרקע הקרובה ביער. הקרקע הקרובה עדיין חסרה.",
+  "new_libs": "PR יומי fix/recompiler-ordered-append מעודכן ומוכן לאישור (לא נדחף).",
+  "tests": "ctest מלא 2295/2331 (pad_sdl נכשל רק בגלל שלט אמיתי, גם ב-main); validation layers 5/5 בלי VUID; 3 סנכרוני main (4e43321bd, c8a3b2588).",
+  "blockers": "שורש הקרקע הקרובה פתוח (ברכיבה לא נשלח אף ציור טסלציה).",
+  "next": "לזהות את ציורי הקרקע הקרובה ולמה ה-CPU לא שולח אותם; מודל HTILE כתיקון כללי נפרד."
+ },
+ {
+  "date": "2026-10-25",
+  "status": "בחקירה",
+  "summary": "עברנו את ה-DEFEND עם סקריפט שמזהה את אייקוני L1/R1 ולוחץ לבד. ביסקט ארוך על 'קרקע חסרה' ברכיבה. כלי הביסקט היה שבור (העתיק דרייבר ישן ומטמון shaders משותף) – תוקן.",
+  "new_libs": "אין חדשים; סנכרון main.",
+  "tests": "בדיקות ממוקדות 34/34 בכל סנכרון.",
+  "blockers": "סימן הביסקט התברר כשארית סטטית של פריימים.",
+  "next": "לעבור את ה-QTE ולבדוק את היער."
+ },
+ {
+  "date": "2026-10-24",
+  "status": "בחקירה",
+  "summary": "1) תקיעת הטעינה: לא המעבר בין הדיסקים. בשמירה יש מצביע ערימה גולמי; הערימה שלנו זזה ב-0x260 והמחרוזת נכתבה על נעילה של המשחק. לבדיקות יש עותק שמירה מתוקן. 2) המשחק הגיע לגיימפליי (קרב פריה). 3) באג הקוצים נמצא ותוקן: קריאות typed של רכיבים בגודל 4 בייט ומעלה צריכות יישור ל-dword (מצב DWORD של החומרה). השטח, רקע התפריט והקרב מוצגים נכון. 4) האתר חולק ל-6 עמודים ונוסף סיכום יומי. ערב: תיקון הפס הכהה (stencil שלא נטען מחדש אחרי ניקוי דרך הזיכרון) מסשן נפרד; סנכרון ל-main d01070d6c. לילה: נמצאה רגרסיה ב-main (PR #8104, staging של BDA) שגרמה לקריסה בהפעלה, ותוקנה (fix/agc-bda-overlay-dissolved-space). ערב מאוחר: פרופיילינג FPS. בגיימפליי כ-8 FPS (p50 122 ms). ה-reload אחרי מוות תקוע כ-46 שניות על 4 קומפילציות של pipeline library (כ-11 שניות כל אחת). הצוואר בגיימפליי: 98% מחיפושי ה-draw cache מפספסים, כי מצביעי user data משתנים בכל פריים, ולכן כל draw מקמפל מחדש. לילה: לפי בקשתך חזרתי לגרפיקה. זוהה עולם חסר בסצנת המזחלת והקרב; התחלתי בידוד עם ריצות שמכבות קבוצות של מנגנונים.",
+  "new_libs": "fix/recompiler-format-element-align (חדש, מוכן ל-PR, הטקסט ב-~/PR_TEXT_GOW_13.md). ממתין: fix/recompiler-ordered-append (~/PR_TEXT_GOW_12.md). חדש: fix/audioout2-push-wait (libSceAudioOut). חדש: fix/agc-stencil-plane-guest-writes. חדש: fix/agc-bda-overlay-dissolved-space.",
+  "tests": "BufferFormatElementAlign: נכשל על main ועובר עם התיקון; 59/59 טסטים של buffer/format; VL compare 0 VUID בשני הצדדים; conventions עובר; במשחק menufix1 ו-fightfix3 תקינים.",
+  "blockers": "אין חוסם כרגע: המשחק נטען לגיימפליי עם ה-integration המסונכרן. ה-QTE עדיין דורש לחיצות מהירות. PR לא נפתח לפי בקשתך.",
+  "next": "לבודד איזה מנגנון גורם לעולם החסר (קאשים, HLE או indirect על ה-GPU), ואז לבדוק את האזורים השחורים. מומלץ להתקין RenderDoc (sudo apt install renderdoc)."
+ },
+ {
+  "date": "2026-10-23",
+  "status": "תוקן",
+  "summary": "תיקון הפסים (ordered append) אומת: 0 פריימים שבורים ב-134 פריימי סצנה, VL compare נקי. סנכרון עם main (+684 קומיטים), FPS בסצנה 3.09 (1% low 1.63). מעבר הנתונים ל-/run/media/arielk/WorkDrive. התגלתה תקיעה במסך הטעינה בשמירת ההתקדמות.",
+  "new_libs": "fix/recompiler-ordered-append (מוכן ל-PR, טקסט ב-~/PR_TEXT_GOW_12.md). ספריות בענפים: net-thread-join-exit, composite-index-command-buffer, savedata-initialize2.",
+  "tests": "15/15 טסטים רלוונטיים, 40/40 טסטים ממוקדים ב-integration, conventions עובר, VL compare 0 VUID.",
+  "blockers": "PR לא נפתח לפי בקשתך; gh לא מותקן (נדרש pr_overlap).",
+  "next": "לפתור את תקיעת הטעינה."
+ },
+ {
+  "date": "2026-10-22",
+  "status": "תוקן",
+  "summary": "איתור שורש באג הפסים: נשללו hazards של ACO, LTO, ה-backend של RADV ו-race בזמן ציור. נמצא ש-compute 0x1038fb8200 כותב את החלקיקים ו-ds_ordered_count רץ בלי סדר. נכתב תיקון (תור לפי סדר שיגור ה-waves). העברת Ubuntu לדיסק 256GB ואיחוד דיסק ה-1TB.",
+  "new_libs": "fix/recompiler-ordered-append (חדש). ענפי ספריות קיימים: npcommon, npmanager (חופפים ל-main #9037/#9144, צריכים עבודה מחדש).",
+  "tests": "טסט GdsAppendConsume נכשל על main ועובר עם התיקון; ריצות serial1-4 נקיות.",
+  "blockers": "אין.",
+  "next": "אימות במשחק ו-VL compare."
+ },
+ {
+  "date": "2026-10-21",
+  "status": "תוקן",
+  "summary": "המשחק הגיע לתפריט ול-New Game, 50 דקות בלי קריסה. תיקוני FPS (shared host pointer, מפתחות image table), תחקור פסי הגרפיקה התחיל.",
+  "new_libs": "perf/agc-shared-host-pointer-refusal, perf/shader-table-key-lowest-set-bit, fix/recompiler-result-memo-budget, hull tessellation, color format 5/7, border color (PR #6804 של מישהו אחר, מקומי בלבד).",
+  "tests": "ריצות ארוכות 44-48 עברו טעינה (1000+ פתיחות).",
+  "blockers": "PR נדחה לבקשתך.",
+  "next": "שורש באג הפסים."
+ }
+]

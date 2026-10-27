@@ -1,0 +1,1035 @@
+<style>
+.gw { direction: rtl; font-family: var(--font-anthropic-sans); display: flex; flex-direction: column; gap: var(--cds-gap-lg); }
+.gw-head { display: flex; flex-direction: column; gap: var(--cds-gap-xs); }
+.gw-title { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0; text-wrap: balance; }
+.gw-takeaway { margin: 0; color: var(--color-fg-muted); font-size: var(--cds-font-size-body); }
+.gw-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: var(--cds-gap-md); }
+.gw-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: flex; flex-direction: column; gap: var(--cds-gap-sm); min-width: 0; }
+.gw-card h2 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0; }
+.gw-note { margin: 0; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+.gw-label { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); letter-spacing: .02em; }
+.gw-big { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); line-height: 1.1; font-variant-numeric: tabular-nums; min-height: 1.2em; }
+.gw-big.gw-text { font-family: var(--font-anthropic-sans); font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); }
+.gw-sub { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm); }
+.gw-grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: var(--cds-gap-md); }
+.gw-task { font-size: var(--cds-font-size-heading); margin: 0; }
+.gw-details summary { cursor: pointer; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+.gw-details summary:focus-visible { outline: 2px solid var(--cds-chart-axis); outline-offset: 2px; }
+.gw-details p { margin: var(--cds-gap-sm) 0 0; line-height: 1.6; max-width: 70ch; }
+.gw-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--cds-gap-xs); }
+.gw-step { display: grid; grid-template-columns: 1.6rem 1fr; gap: var(--cds-gap-sm); align-items: start; padding: var(--cds-pad-xs) var(--cds-pad-sm); border-radius: var(--cds-radius); }
+.gw-step .gw-dot { width: 1.4rem; height: 1.4rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: var(--cds-font-size-caption); border: 1px solid var(--color-border-line); color: var(--color-fg-muted); font-variant-numeric: tabular-nums; }
+.gw-step.done .gw-dot { background: var(--cds-chart-muted); color: var(--color-bg); border-color: transparent; }
+.gw-step.current { background: var(--color-bg); border: 1px solid var(--color-border-line); }
+.gw-step.current .gw-dot { background: var(--color-fg); color: var(--color-bg); border-color: transparent; }
+.gw-step.pending .gw-steptitle { color: var(--color-fg-muted); }
+.gw-step details summary { list-style: none; cursor: pointer; }
+.gw-step details summary::-webkit-details-marker { display: none; }
+.gw-step details p { margin: var(--cds-gap-xs) 0 0; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); line-height: 1.5; }
+.gw-chart { position: relative; min-height: 240px; direction: ltr; }
+.gw-tip { position: absolute; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); padding: var(--cds-pad-xs) var(--cds-pad-sm); font-size: var(--cds-font-size-caption); white-space: nowrap; direction: rtl; }
+.gw-tip .gw-tipdate { color: var(--cds-text-secondary); }
+.gw-legend { display: flex; flex-wrap: wrap; gap: var(--cds-gap-md); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.gw-legend span { display: inline-flex; align-items: center; gap: var(--cds-gap-xs); }
+.gw-legend i { width: .7rem; height: .7rem; border-radius: 2px; display: inline-block; }
+.gw-subhead { font-size: var(--cds-font-size-body); font-weight: var(--cds-font-weight-medium); margin: var(--cds-gap-sm) 0 0; }
+.gw-pies { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: var(--cds-gap-md); }
+.gw-pie { margin: 0; display: flex; flex-direction: column; align-items: center; gap: var(--cds-gap-sm); padding: var(--cds-pad-sm); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); }
+.gw-pie h4 { margin: 0; font-size: var(--cds-font-size-body); font-weight: var(--cds-font-weight-medium); }
+.gw-pie small { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+.gw-pie svg { width: 100%; max-width: 12rem; height: auto; }
+.gw-pie ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px; width: 100%; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+.gw-pie li { display: flex; align-items: center; gap: var(--cds-gap-xs); }
+.gw-pie li i { width: .7rem; height: .7rem; border-radius: 2px; flex: none; }
+.gw-pie li b { margin-inline-start: auto; font-weight: var(--cds-font-weight-medium); }
+.gw-pie li small { color: var(--color-fg-muted); min-width: 5.5rem; text-align: end; }
+.gw-pie .gw-pie-total { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+.gw-session { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm); align-items: center; }
+.gw-chip { display: inline-flex; align-items: center; gap: var(--cds-gap-xs); padding: 2px var(--cds-pad-sm); border: 1px solid var(--color-border-line); border-radius: 999px; font-size: var(--cds-font-size-caption); background: var(--color-panel); }
+.gw-chip span { color: var(--color-fg-muted); }
+.gw-st { display: inline-block; padding: 1px var(--cds-pad-sm); border-radius: 999px; font-size: var(--cds-font-size-caption); white-space: nowrap; border: 1px solid var(--color-border-line); }
+.gw-st.ruled { color: var(--color-fg-muted); }
+.gw-st.testing { border-color: var(--color-warn); color: var(--color-warn); }
+.gw-st.open { border-color: var(--color-ok); color: var(--color-ok); }
+.gw-live { display: flex; flex-direction: column; gap: var(--cds-gap-sm); }
+.gw-live-head { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm); align-items: baseline; }
+.gw-live-head strong { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); }
+.gw-badbar { display: flex; align-items: center; gap: var(--cds-gap-sm); }
+.gw-badbar .gw-bar { flex: 1; }
+.gw-badbar .gw-bar > b.base { background: var(--cds-chart-muted); }
+.gw-badbar .gw-bar > b.exp { background: var(--color-warn); }
+.gw-badbar .gw-bar > b.zero { background: var(--color-ok); }
+.gw-tablebox { max-height: 22rem; overflow: auto; }
+.gw table { width: 100%; border-collapse: collapse; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+.gw th { text-align: start; font-weight: var(--cds-font-weight-medium); color: var(--color-fg-muted); padding: var(--cds-pad-xs) var(--cds-pad-sm); border-bottom: 1px solid var(--color-border-line); position: sticky; top: 0; background: var(--color-panel); }
+.gw td { padding: var(--cds-pad-xs) var(--cds-pad-sm); border-bottom: 1px solid var(--color-border-line); vertical-align: top; }
+.gw td.gw-num, .gw th.gw-num { text-align: end; }
+.gw-bar { position: relative; height: .9rem; background: var(--cds-chart-grid); border-radius: 4px; overflow: hidden; min-width: 4rem; }
+.gw-bar > b { position: absolute; inset-block: 0; inset-inline-start: 0; border-radius: 4px; background: var(--cds-chart-muted); }
+.gw-bar.full > b { background: var(--color-ok); }
+.gw-pill { display: inline-block; padding: 0 .5rem; border-radius: 999px; border: 1px solid var(--color-border-line); white-space: nowrap; }
+.gw-frames { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr)); gap: var(--cds-gap-md); min-height: 8rem; }
+.gw-frame { margin: 0; display: flex; flex-direction: column; gap: var(--cds-gap-xs); }
+.gw-frame img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--cds-radius); border: 1px solid var(--color-border-line); background: var(--color-bg); }
+.gw-frame figcaption { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); display: flex; justify-content: space-between; gap: var(--cds-gap-sm); font-variant-numeric: tabular-nums; }
+.gw-fail { display: flex; align-items: center; justify-content: center; gap: var(--cds-gap-xs); color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); min-height: 4rem; }
+.gw-fail::before { content: ""; width: .375rem; height: .375rem; border-radius: 50%; background: var(--color-bad); }
+.gw-progress { display: flex; flex-direction: column; gap: var(--cds-gap-lg); }
+.gw-meter-row { display: grid; grid-template-columns: minmax(8rem, 14rem) 1fr; gap: var(--cds-gap-md); align-items: center; }
+@media (max-width: 40rem) { .gw-meter-row { grid-template-columns: 1fr; gap: var(--cds-gap-xs); } }
+.gw-meter-name { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.gw-meter-name strong { font-weight: var(--cds-font-weight-medium); font-size: var(--cds-font-size-body); }
+.gw-meter-name small { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+.gw-meter { --fill: var(--cds-chart-muted); position: relative; height: 1.9rem; border-radius: 999px; background: var(--cds-chart-grid); border: 1px solid var(--color-border-line); overflow: hidden; direction: ltr; }
+.gw-meter.gw-hero { height: 2.6rem; }
+.gw-meter-fill { position: absolute; inset-block: 0; left: 0; width: 0; border-radius: 999px; background-color: var(--fill); background-image: linear-gradient(135deg, rgba(255,255,255,.22) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.22) 50%, rgba(255,255,255,.22) 75%, transparent 75%, transparent); background-size: 1.6rem 1.6rem; transition: width 1.4s cubic-bezier(.2,.8,.2,1); }
+.gw-meter.done .gw-meter-fill { background-image: none; }
+.gw-meter-mark { position: absolute; inset-block: 0; width: 2px; background: var(--color-fg); opacity: .55; }
+.gw-meter-label { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-variant-numeric: tabular-nums; font-weight: var(--cds-font-weight-medium); font-size: var(--cds-font-size-body); color: var(--color-fg); text-shadow: 0 0 6px var(--color-bg), 0 0 2px var(--color-bg); }
+.gw-meter.gw-hero .gw-meter-label { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-heading); }
+@media (prefers-reduced-motion: no-preference) {
+  .gw-meter:not(.done) .gw-meter-fill { animation: gw-stripes 1.2s linear infinite; }
+  @keyframes gw-stripes { from { background-position: 0 0; } to { background-position: 1.6rem 0; } }
+}
+@media (prefers-reduced-motion: reduce) { .gw-meter-fill { transition: none; } }
+.gw-steps-line { height: .4rem; border-radius: 999px; background: var(--cds-chart-grid); overflow: hidden; direction: ltr; }
+.gw-steps-line > b { display: block; height: 100%; width: 0; background: var(--color-fg); border-radius: 999px; transition: width 1.2s cubic-bezier(.2,.8,.2,1); }
+[data-dash-source-state=empty] { color: transparent; }
+[data-dash-source-state=refreshing] { opacity: .5; transition: opacity var(--cds-dur-slow); }
+.gw-tabs { display: flex; gap: var(--cds-gap-xs); flex-wrap: wrap; }
+.gw-tab { font: inherit; font-size: var(--cds-font-size-body); padding: var(--cds-pad-sm) var(--cds-pad-md); border-radius: 999px; border: 1px solid var(--color-border-line); background: transparent; color: var(--color-fg-muted); cursor: pointer; }
+.gw-tab[aria-selected=true] { background: var(--color-fg); color: var(--color-bg); border-color: var(--color-fg); }
+.gw > [data-page][hidden] { display: none; }
+#daily-table td { vertical-align: top; white-space: normal; line-height: 1.5; }
+#daily-table td:first-child { white-space: nowrap; }
+#daily .gw-tablebox { max-height: none; }
+</style>
+
+<div class="gw">
+  <header class="gw-head">
+    <h1 class="gw-title" id="top">God of War Ragnarök על AnyPS5</h1>
+    <p class="gw-takeaway">עכשיו: <span class="dash-skeleton" data-source="status" data-field="task" data-row="0">—</span></p>
+    <div class="gw-tabs" role="tablist">
+      <button class="gw-tab" role="tab" data-tab="overview" aria-selected="true">סקירה</button>
+      <button class="gw-tab" role="tab" data-tab="daily" aria-selected="false">סיכום יומי</button>
+      <button class="gw-tab" role="tab" data-tab="gfx" aria-selected="false">גרפיקה ובאגים</button>
+      <button class="gw-tab" role="tab" data-tab="perf" aria-selected="false">ביצועים</button>
+      <button class="gw-tab" role="tab" data-tab="libs" aria-selected="false">ספריות ו-PR</button>
+      <button class="gw-tab" role="tab" data-tab="tokens" aria-selected="false">טוקנים</button>
+    </div>
+  </header>
+
+  <section class="gw-card" id="daily" data-page="daily">
+    <h2>סיכום יומי</h2>
+    <p class="gw-note">מה נעשה בכל יום, מה נמצא, ואילו ספריות או ענפים חדשים ייכנסו ל-PR כשתאשר.</p>
+    <div class="gw-tablebox">
+      <table id="daily-table" data-source="daily" data-row-key="date">
+        <thead><tr>
+          <th data-field="date">תאריך</th>
+          <th data-field="status">מצב</th>
+          <th data-field="summary">הסבר</th>
+          <th data-field="new_libs">ספריות / ענפים חדשים ל-PR</th>
+          <th data-field="tests">בדיקות ואימות</th>
+          <th data-field="blockers">חסמים</th>
+          <th data-field="next">הצעד הבא</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="gw-card gw-progress" id="progress" data-page="overview">
+    <h2>התקדמות</h2>
+    <p class="gw-note" id="progress-updated">עודכן לאחרונה: <span data-source="status" data-field="updated_label" data-row="0">—</span></p>
+    <div class="gw-meter-row">
+      <div class="gw-meter-name"><strong>טעינת המפה</strong><small>חסר: <span data-source="map_progress" data-field="missing" data-row="0">—</span></small></div>
+      <div class="gw-meter gw-hero" data-meter="map" role="progressbar" aria-label="טעינת המפה" aria-valuemin="0" aria-valuemax="100"><div class="gw-meter-fill"></div><span class="gw-meter-label dash-skeleton" data-source="map_progress" data-field="percent" data-row="0">—</span></div>
+    </div>
+    <div class="gw-meter-row">
+      <div class="gw-meter-name"><strong>תיקון הגרפיקה</strong><small>ממוצע משוקלל של הבעיות הידועות (הערכה)</small></div>
+      <div class="gw-meter gw-hero" data-meter="graphics" role="progressbar" aria-label="התקדמות בגרפיקה" aria-valuemin="0" aria-valuemax="100"><div class="gw-meter-fill"></div><span class="gw-meter-label dash-skeleton" data-source="graphics_progress" data-field="percent" data-row="0">—</span></div>
+    </div>
+    <div class="gw-meter-row">
+      <div class="gw-meter-name"><strong>תהליך העבודה</strong><small><span data-source="process_progress" data-field="done" data-row="0">—</span> מתוך <span data-source="process_progress" data-field="total" data-row="0">—</span> שלבים הושלמו</small></div>
+      <div class="gw-meter" data-meter="process" role="progressbar" aria-label="התקדמות בתהליך" aria-valuemin="0" aria-valuemax="100"><div class="gw-meter-fill"></div><span class="gw-meter-label dash-skeleton" data-source="process_progress" data-field="percent" data-row="0">—</span></div>
+    </div>
+    <div class="gw-meter-row">
+      <div class="gw-meter-name"><strong>FPS מול יעד 30</strong><small>FPS ממוצע בריצה האחרונה: <span data-source="last_run" data-field="avg_fps" data-row="0">—</span></small></div>
+      <div class="gw-meter" data-meter="fps" role="progressbar" aria-label="FPS מול יעד 30" aria-valuemin="0" aria-valuemax="100"><div class="gw-meter-fill"></div><span class="gw-meter-label dash-skeleton" data-source="fps_goal" data-field="percent" data-row="0">—</span></div>
+    </div>
+    <div class="gw-meter-row">
+      <div class="gw-meter-name"><strong>ספריות מערכת (progress.html)</strong><small><span data-source="coverage" data-field="implemented" data-where="point=main%20%D7%94%D7%99%D7%95%D7%9D%20(progress.html)">—</span> פונקציות ממומשות ב-main מתוך <span data-source="coverage" data-field="total" data-where="point=main%20%D7%94%D7%99%D7%95%D7%9D%20(progress.html)">—</span></small></div>
+      <div class="gw-meter" data-meter="libs" role="progressbar" aria-label="כיסוי ספריות" aria-valuemin="0" aria-valuemax="100"><div class="gw-meter-fill"></div><span class="gw-meter-label dash-skeleton" data-source="coverage_pct" data-field="pct" data-where="point=main%20%D7%94%D7%99%D7%95%D7%9D%20(progress.html)">—</span></div>
+    </div>
+  </section>
+
+  <section class="gw-card gw-progress" id="tokens" data-page="tokens">
+    <h2>טוקנים</h2>
+    <div class="gw-session" aria-label="המודל והמאמץ בשימוש">
+      <span class="gw-chip"><span>מודל</span> <strong data-source="status" data-field="model_label" data-row="0">—</strong></span>
+      <span class="gw-chip"><span>מאמץ</span> <strong data-source="status" data-field="effort_label" data-row="0">—</strong></span>
+      <span class="gw-chip"><span>מצב מהיר</span> <strong data-source="status" data-field="fast_mode" data-row="0">—</strong></span>
+      <span class="gw-note">נכון ל-<span data-source="status" data-field="session_at" data-row="0">—</span></span>
+    </div>
+    <p class="gw-note">כמה בזבזנו מכל מגבלה ומתי היא מתאפסת. המדידה האחרונה: <span data-source="usage" data-field="measured_at" data-row="0">—</span>. בין מדידות הדף מעריך כל דקה לפי קצב השימוש בחלון הנוכחי, ומיד אחרי איפוס לפי הקצב של החלון הקודם (מסומן ~).</p>
+    <div class="gw-meter-row">
+      <div class="gw-meter-name"><strong>מגבלת 5 השעות</strong><small>מתאפסת <span class="gw-reset" data-reset="five_hour" data-source="usage" data-field="resets_at" data-where="limit=five_hour">—</span>; נמדד <span data-source="usage" data-field="percent_used" data-where="limit=five_hour">—</span></small></div>
+      <div class="gw-meter gw-hero" data-meter="five_hour" role="progressbar" aria-label="נוצל ממגבלת 5 השעות" aria-valuemin="0" aria-valuemax="100"><div class="gw-meter-fill"></div><span class="gw-meter-label">—</span></div>
+    </div>
+    <div class="gw-meter-row">
+      <div class="gw-meter-name"><strong>מגבלה שבועית</strong><small>מתאפסת <span class="gw-reset" data-reset="weekly" data-source="usage" data-field="resets_at" data-where="limit=weekly">—</span>; נמדד <span data-source="usage" data-field="percent_used" data-where="limit=weekly">—</span></small></div>
+      <div class="gw-meter" data-meter="weekly" role="progressbar" aria-label="נוצל מהמגבלה השבועית" aria-valuemin="0" aria-valuemax="100"><div class="gw-meter-fill"></div><span class="gw-meter-label">—</span></div>
+    </div>
+    <h3 class="gw-subhead">על מה הלכו הטוקנים</h3>
+    <p class="gw-note">חלוקה לפי נושא של כל הטוקנים בסשן הזה ובסוכני הרקע שלו. כל סוג טוקן משוקלל לפי עלותו היחסית: קריאה מהמטמון ×0.1, כתיבה למטמון ×1.25, פלט ×5. במרכז כל עוגה ובעמודה הימנית: כמה אחוזים זה לקח מהמגבלה השבועית. החישוב מחלק את האחוז השבועי שנמדד לפי חלקו של כל נושא בשימוש מאז האיפוס השבועי, בהנחה שכל השימוש השבועי בא מהעבודה הזו (שעות שלפני האיפוס לא נספרות). נמדד: <span data-source="tokens" data-field="measured_at" data-row="0">—</span>.</p>
+    <div class="gw-pies dash-skeleton" id="token-pies" data-source="tokens"></div>
+  </section>
+
+  <section class="gw-card" id="liverun" data-page="overview">
+    <h2>ריצה עכשיו</h2>
+    <div class="gw-live dash-skeleton" id="live-box" data-source="liverun"></div>
+  </section>
+
+  <section class="gw-kpis" id="summary" aria-label="סיכום" data-page="overview">
+    <div class="gw-card">
+      <span class="gw-label">פונקציות חדשות (יעלו ב-progress.html)</span>
+      <span class="gw-big dash-skeleton" data-source="functions_summary" data-field="progress_count" data-row="0">—</span>
+      <span class="gw-sub"><span><span data-source="functions_summary" data-field="functions" data-row="0">—</span> exports ב-<span data-source="functions_summary" data-field="libraries" data-row="0">—</span> ספריות</span><span>main: <span data-source="coverage" data-field="implemented" data-where="point=main%20%D7%94%D7%99%D7%95%D7%9D%20(progress.html)">—</span> מתוך <span data-source="coverage" data-field="total" data-where="point=main%20%D7%94%D7%99%D7%95%D7%9D%20(progress.html)">—</span></span></span>
+    </div>
+    <div class="gw-card">
+      <span class="gw-label">תיקונים (באגים וביצועים)</span>
+      <span class="gw-big dash-skeleton" data-source="fixes_summary" data-field="fixes" data-row="0">—</span>
+      <span class="gw-sub"><span>ב-<span data-source="fixes_summary" data-field="libraries" data-row="0">—</span> ספריות; לא נספרים ב-progress.html</span></span>
+    </div>
+    <div class="gw-card">
+      <span class="gw-label">FPS ממוצע בריצה האחרונה</span>
+      <span class="gw-big dash-skeleton" data-source="last_run" data-field="avg_fps" data-row="0">—</span>
+      <span class="gw-sub"><span>1% low <span data-source="last_run" data-field="low1_fps" data-row="0">—</span></span><span>1% high <span data-source="last_run" data-field="high1_fps" data-row="0">—</span></span><span>ריצה <span data-source="last_run" data-field="run" data-row="0">—</span></span></span>
+    </div>
+    <div class="gw-card">
+      <span class="gw-label">השלב הנוכחי בתהליך</span>
+      <span class="gw-big gw-text dash-skeleton" data-source="process" data-field="title" data-where="state=current">—</span>
+      <span class="gw-sub">עודכן <span data-source="status" data-field="updated" data-row="0">—</span></span>
+    </div>
+  </section>
+
+  <div class="gw-grid2" data-page="overview">
+    <section class="gw-card" id="task">
+      <h2>מה אני עושה עכשיו</h2>
+      <p class="gw-task dash-skeleton" data-source="status" data-field="task" data-row="0">—</p>
+      <details class="gw-details">
+        <summary>פירוט</summary>
+        <p data-source="status" data-field="detail" data-row="0">—</p>
+      </details>
+    </section>
+
+    <section class="gw-card" id="process">
+      <h2>תהליך העבודה</h2>
+      <p class="gw-note">השלב המודגש הוא השלב הנוכחי. לחיצה על שלב פותחת פירוט.</p>
+      <div class="gw-steps-line" aria-hidden="true"><b id="steps-line"></b></div>
+      <ol class="gw-steps dash-skeleton" id="steps"></ol>
+    </section>
+  </div>
+
+  <section class="gw-card" id="fps" data-page="perf">
+    <h2>FPS לכל ריצה</h2>
+    <p class="gw-note">ממוצע FPS בכל ריצה. 1% low ו-1% high נמדדים מזמני ה-present של כל פריים, מהריצות שמתעדות אותם (מ-22.10 ואילך).</p>
+    <div class="gw-legend" id="fps-legend"></div>
+    <div class="gw-chart dash-skeleton" id="fps-chart" data-source="runs"></div>
+    <div class="gw-tablebox">
+      <table id="runs-table" data-source="runs" data-row-key="run">
+        <thead><tr>
+          <th data-field="run">ריצה</th>
+          <th data-field="kind">סוג</th>
+          <th data-field="ended">הסתיימה</th>
+          <th class="gw-num" data-field="seconds">שניות</th>
+          <th class="gw-num" data-field="presents">פריימים</th>
+          <th class="gw-num" data-field="avg_fps">FPS ממוצע</th>
+          <th class="gw-num" data-field="low1_fps">1% low</th>
+          <th class="gw-num" data-field="high1_fps">1% high</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="gw-card" id="frames" data-page="perf">
+    <h2>פריימים מהריצה האחרונה</h2>
+    <p class="gw-note">פריימים שנשמרו בריצה, עם ה-FPS בעשר השניות סביבם כשהוא נמדד.</p>
+    <div class="gw-frames dash-skeleton" id="frame-grid" data-source="frames"></div>
+  </section>
+
+  <div class="gw-grid2" data-page="gfx">
+    <section class="gw-card" id="graphics">
+      <h2>בעיות גרפיקה ידועות</h2>
+      <p class="gw-note">האחוז למעלה הוא סכום המשקל כפול ההתקדמות של כל בעיה, חלקי סכום המשקלים.</p>
+      <table id="graphics-table" data-source="graphics" data-row-key="issue">
+        <thead><tr>
+          <th data-field="issue">בעיה</th>
+          <th class="gw-num" data-field="weight">משקל</th>
+          <th data-field="status">התקדמות</th>
+          <th data-field="note">מצב</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section class="gw-card" id="libraries">
+      <h2>תיקונים</h2>
+      <p class="gw-note">באגים וביצועים, כל תיקון ב-branch משלו מ-main עם טסט שנכשל על main ועובר עם התיקון. progress.html סופר רק פונקציות שהפסיקו לקרוא ל-NotImplemented_nid_no_patch, ולכן תיקונים לא מעלים אותו.</p>
+      <div class="gw-tablebox">
+        <table id="fixes-table" data-source="fixes" data-row-key="fix">
+          <thead><tr>
+            <th data-field="fix">תיקון</th>
+            <th data-field="library">ספרייה</th>
+            <th data-field="kind">סוג</th>
+            <th data-field="state">מצב</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <section class="gw-card" id="hypotheses" data-page="gfx">
+    <h2>לוח השערות</h2>
+    <p class="gw-note">כל השערה שנבדקה על ה-shader של החלקיקים (0x13a0b48700) והמצב שלה. הראיה היא הניסוי שהכריע.</p>
+    <div class="gw-tablebox">
+      <table id="hyp-table" data-source="hypotheses" data-row-key="name">
+        <thead><tr>
+          <th data-field="status">מצב</th>
+          <th data-field="name">השערה</th>
+          <th data-field="evidence">ראיה</th>
+          <th data-field="date">תאריך</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="gw-card" id="badframes" data-page="gfx">
+    <h2>פריימים שבורים לכל ריצה</h2>
+    <p class="gw-note">סצנת האח כשרק ה-shader הבעייתי מצויר. פריים שבור = יותר מ-10% מהפיקסלים שונים מכל פריימי הייחוס הנקיים. 0 = נקי. אפור = ריצת בסיס, כתום = ניסוי, ירוק = ניסוי בלי שום פריים שבור.</p>
+    <div class="gw-tablebox">
+      <table id="bad-table" data-source="badframes" data-row-key="tag">
+        <thead><tr>
+          <th data-field="label">ריצה</th>
+          <th data-field="bad">פריימים שבורים</th>
+          <th class="gw-num" data-field="max_score">ציון מקסימלי</th>
+          <th class="gw-num" data-field="frames">פריימים</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="gw-card" id="functions" data-page="libs">
+    <h2>פונקציות חדשות בספריות המערכת</h2>
+    <p class="gw-note">כל ספרייה ב-branch משלו מ-main, עם טסט שנכשל על main ועובר. "progress.html" הוא מה שהמונה באתר יראה אחרי מיזוג, לפי tools/progress.py.</p>
+    <div class="gw-tablebox">
+      <table id="functions-table" data-source="functions" data-row-key="library">
+        <thead><tr>
+          <th data-field="library">ספרייה</th>
+          <th data-field="what">מה נוסף</th>
+          <th class="gw-num" data-field="functions">exports</th>
+          <th class="gw-num" data-field="progress_count">progress.html</th>
+          <th data-field="branch">branch</th>
+          <th data-field="state">מצב</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="gw-card" id="branches" data-page="libs">
+    <h2>Branches, PRs ולוח זמנים</h2>
+    <div class="gw-session dash-skeleton" id="schedule-box" data-source="schedule"></div>
+    <div class="gw-tablebox">
+      <table id="branches-table" data-source="branches" data-row-key="branch">
+        <thead><tr>
+          <th data-field="branch">branch</th>
+          <th data-field="title">כותרת ה-PR</th>
+          <th class="gw-num" data-field="commits">commits</th>
+          <th data-field="in_integration">ב-integration</th>
+          <th data-field="pr_ready">טקסט PR</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <h3 class="gw-subhead">שימוש בטוקנים לאורך היום</h3>
+    <p class="gw-note">כל נקודה היא מדידה אמיתית מכרטיס השימוש. הקו של 5 השעות מתחיל מחדש בכל איפוס.</p>
+    <div class="gw-chart dash-skeleton" id="usage-chart" data-source="usage_history"></div>
+    <div class="gw-legend" id="usage-legend"></div>
+  </section>
+
+  <section class="gw-card" id="coverage" data-page="libs">
+    <h2>כיסוי פונקציות הספריות ב-AnyPS5</h2>
+    <p class="gw-note">פונקציות ממומשות מתוך כל הפונקציות הידועות (tools/progress.py). המספר הכולל גדל כש-main מוסיף ספריות.</p>
+    <table id="coverage-table" data-source="coverage" data-row-key="point">
+      <thead><tr>
+        <th data-field="point">נקודה</th>
+        <th data-field="commit">commit</th>
+        <th data-field="date">תאריך</th>
+        <th class="gw-num" data-field="implemented">ממומשות</th>
+        <th class="gw-num" data-field="total">סה״כ</th>
+        <th class="gw-num" data-source="coverage_pct" data-field="pct">אחוז</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+</div>
+
+<script>
+dash.calc('graphics_progress', {
+  inputs: ['graphics'],
+  title: 'Graphics progress',
+  description: 'Sum of weight times status over sum of weight, for the known graphics issues.',
+  fn: (graphics) => {
+    const total = d3.sum(graphics, (g) => Number(g.weight));
+    const done = d3.sum(graphics, (g) => Number(g.weight) * Number(g.status));
+    return [{percent: total ? done / total : 0}];
+  }
+});
+dash.calc('map_progress', {
+  inputs: ['map'],
+  title: 'Map loading progress',
+  description: 'Sum of weight times status over sum of weight, for the parts of the map in the current scene, and the parts still missing.',
+  fn: (map) => {
+    const total = d3.sum(map, (m) => Number(m.weight));
+    const done = d3.sum(map, (m) => Number(m.weight) * Number(m.status));
+    const missing = map.filter((m) => Number(m.status) < 1).map((m) => m.item).join(' · ');
+    return [{percent: total ? done / total : 0, missing: missing || 'כלום'}];
+  }
+});
+dash.calc('fixes_summary', {
+  inputs: ['fixes'],
+  title: 'Fixes summary',
+  description: 'Number of bug and performance fixes and of distinct libraries they touch.',
+  fn: (fixes) => [{fixes: fixes.length, libraries: new Set(fixes.map((f) => f.library)).size}]
+});
+dash.calc('functions_summary', {
+  inputs: ['functions'],
+  title: 'New functions summary',
+  description: 'Sum of progress.html functions and of exports added by the new-function branches, and their libraries.',
+  fn: (functions) => [{
+    progress_count: d3.sum(functions, (f) => Number(f.progress_count)),
+    functions: d3.sum(functions, (f) => Number(f.functions)),
+    libraries: new Set(functions.map((f) => f.library)).size
+  }]
+});
+dash.calc('last_run', {
+  inputs: ['runs'],
+  title: 'Latest run',
+  description: 'The run that ended last.',
+  fn: (runs) => {
+    const sorted = runs.slice().sort((a, b) => String(a.ended).localeCompare(String(b.ended)));
+    return sorted.length ? [sorted[sorted.length - 1]] : [];
+  }
+});
+dash.calc('coverage_pct', {
+  inputs: ['coverage'],
+  title: 'Coverage share',
+  description: 'Implemented functions over all known functions at each point.',
+  fn: (coverage) => coverage.map((c) => ({point: c.point, pct: Number(c.total) ? Number(c.implemented) / Number(c.total) : 0}))
+});
+dash.calc('process_progress', {
+  inputs: ['process'],
+  title: 'Process progress',
+  description: 'Completed steps over all steps of the work plan.',
+  fn: (process) => {
+    const done = process.filter((p) => p.state === 'done').length;
+    return [{done, total: process.length, percent: process.length ? done / process.length : 0}];
+  }
+});
+dash.calc('fps_goal', {
+  inputs: ['runs'],
+  title: 'FPS toward 30',
+  description: 'Average FPS of the run that ended last, over a 30 FPS goal, capped at 100%.',
+  fn: (runs) => {
+    const sorted = runs.slice().sort((a, b) => String(a.ended).localeCompare(String(b.ended)));
+    const last = sorted[sorted.length - 1];
+    return last ? [{percent: Math.min(1, Number(last.avg_fps) / 30)}] : [];
+  }
+});
+</script>
+
+<script>
+(function () {
+  const pct = d3.format('.1%');
+  const pct0 = d3.format('.0%');
+  const fps = (v) => (v === null || v === undefined || v === '' ? '—' : d3.format('.2f')(Number(v)));
+  const count = d3.format(',');
+  const kinds = ['ריצה ארוכה', 'ריצה קצרה', 'סצנה / ניסוי'];
+  const fail = (el) => { el.textContent = ''; const line = document.createElement('div'); line.className = 'gw-fail'; line.textContent = 'Failed to load'; el.appendChild(line); };
+  const settled = (el) => el.classList.remove('dash-skeleton');
+  const fill = (id, format) => {
+    const d = dash.data(id);
+    document.querySelectorAll(`[data-source="${id}"][data-field]`).forEach((el) => {
+      if (el.closest('table')) return;
+      if (d.status === 'error') { settled(el); el.textContent = '—'; return; }
+      if (d.status !== 'ok') return;
+      settled(el);
+      const rows = d.data || [];
+      let row = null;
+      if (el.dataset.row !== undefined) row = rows[Number(el.dataset.row)];
+      else if (el.dataset.where) {
+        const [key, value] = el.dataset.where.split('=').map(decodeURIComponent);
+        row = rows.find((r) => String(r[key]) === value);
+      }
+      const value = row ? row[el.dataset.field] : null;
+      el.textContent = format && format[el.dataset.field] ? format[el.dataset.field](value) : (value === null || value === undefined ? '—' : String(value));
+    });
+  };
+  const table = (id, columns) => {
+    const d = dash.data(id);
+    const el = document.querySelector(`table[data-source="${id}"]`);
+    const body = el.querySelector('tbody');
+    body.textContent = '';
+    if (d.status !== 'ok') return d.status;
+    (d.data || []).forEach((row) => {
+      const tr = document.createElement('tr');
+      columns.forEach((col) => {
+        const td = document.createElement('td');
+        if (col.num) td.className = 'gw-num';
+        if (col.render) col.render(td, row); else td.textContent = row[col.field] === null || row[col.field] === undefined ? '—' : String(row[col.field]);
+        tr.appendChild(td);
+      });
+      body.appendChild(tr);
+    });
+    return 'ok';
+  };
+
+  const meter = (name, id, field, where, color, mark) => {
+    const box = document.querySelector(`[data-meter="${name}"]`);
+    if (!box) return;
+    const fillEl = box.querySelector('.gw-meter-fill');
+    const d = dash.data(id);
+    if (d.status !== 'ok') return;
+    const rows = d.data || [];
+    const row = where ? rows.find((r) => String(r[where[0]]) === where[1]) : rows[0];
+    const value = row ? Math.max(0, Math.min(1, Number(row[field]))) : 0;
+    box.style.setProperty('--fill', color);
+    box.classList.toggle('done', value >= 1);
+    box.setAttribute('aria-valuenow', String(Math.round(value * 100)));
+    requestAnimationFrame(() => { fillEl.style.width = `${(value * 100).toFixed(1)}%`; });
+    box.querySelectorAll('.gw-meter-mark').forEach((m) => m.remove());
+    if (mark !== null && mark !== undefined) {
+      const m = document.createElement('div');
+      m.className = 'gw-meter-mark';
+      m.style.left = `${(Math.max(0, Math.min(1, mark)) * 100).toFixed(1)}%`;
+      box.appendChild(m);
+    }
+  };
+  const drawSteps = () => {
+    const d = dash.data('process');
+    const list = document.getElementById('steps');
+    list.textContent = '';
+    if (d.status === 'error') { settled(list); fail(list); return; }
+    if (d.status !== 'ok') return;
+    settled(list);
+    (d.data || []).forEach((step, i) => {
+      const li = document.createElement('li');
+      li.className = `gw-step ${step.state}`;
+      const dot = document.createElement('span');
+      dot.className = 'gw-dot';
+      dot.textContent = step.state === 'done' ? '✓' : String(i + 1);
+      const box = document.createElement('details');
+      if (step.state === 'current') box.open = true;
+      const summary = document.createElement('summary');
+      const title = document.createElement('span');
+      title.className = 'gw-steptitle';
+      title.dataset.source = 'process';
+      title.dataset.field = 'title';
+      title.dataset.row = String(i);
+      title.textContent = step.title;
+      summary.appendChild(title);
+      const detail = document.createElement('p');
+      detail.dataset.source = 'process';
+      detail.dataset.field = 'detail';
+      detail.dataset.row = String(i);
+      detail.textContent = step.detail;
+      box.appendChild(summary);
+      box.appendChild(detail);
+      li.appendChild(dot);
+      li.appendChild(box);
+      list.appendChild(li);
+    });
+  };
+
+  const drawPies = () => {
+    const d = dash.data('tokens');
+    const box = document.getElementById('token-pies');
+    if (!box) return;
+    box.textContent = '';
+    if (d.status === 'error') { settled(box); fail(box); return; }
+    if (d.status !== 'ok') return;
+    settled(box);
+    const rows = d.data || [];
+    const big = d3.format('.3~s');
+    const color = (r) => dash.colors[Number(r.order) % dash.colors.length];
+    const weekly = (v) => (v === null || v === undefined || v === '' ? '—' : Number(v) < 0.01 ? d3.format('.2%')(Number(v)) : d3.format('.1%')(Number(v)));
+    ['five_hour', 'day', 'week'].forEach((w) => {
+      const parts = rows.filter((r) => r.window === w).sort((a, b) => Number(b.weighted) - Number(a.weighted) || Number(a.order) - Number(b.order));
+      const card = document.createElement('figure');
+      card.className = 'gw-pie';
+      const title = document.createElement('h4');
+      title.textContent = parts.length ? parts[0].window_label : ({five_hour: '5 השעות הנוכחיות', day: 'היום', week: 'השבוע (מאז האיפוס השבועי)'})[w];
+      card.appendChild(title);
+      if (parts.length && parts[0].since) {
+        const since = document.createElement('small');
+        since.textContent = `מאז ${new Date(parts[0].since).toLocaleString('he-IL', {weekday: 'short', hour: '2-digit', minute: '2-digit'})}`;
+        card.appendChild(since);
+      }
+      const total = d3.sum(parts, (r) => Number(r.weighted));
+      const weeklyTotal = d3.sum(parts, (r) => Number(r.weekly_share || 0));
+      const hasWeekly = parts.some((r) => r.weekly_share !== null && r.weekly_share !== undefined);
+      const size = 180;
+      const radius = size / 2;
+      const svg = d3.select(card).append('svg').attr('viewBox', `${-radius} ${-radius} ${size} ${size}`).attr('role', 'img').attr('aria-label', `חלוקת הטוקנים: ${title.textContent}`);
+      if (!total) {
+        svg.append('circle').attr('r', radius * 0.79).attr('fill', 'none').attr('stroke', 'var(--cds-chart-grid)').attr('stroke-width', radius * 0.4);
+        svg.append('text').attr('text-anchor', 'middle').attr('dy', '0.35em').attr('font-size', 12).attr('fill', 'var(--color-fg-muted)').text('עוד אין שימוש');
+      } else {
+        const pie = d3.pie().sort(null).value((r) => Number(r.weighted));
+        const arc = d3.arc().innerRadius(radius * 0.58).outerRadius(radius - 2).padAngle(0.012);
+        const label = d3.arc().innerRadius(radius * 0.79).outerRadius(radius * 0.79);
+        const slices = pie(parts);
+        svg.selectAll('path').data(slices).join('path').attr('d', arc).attr('fill', (a) => color(a.data)).append('title').text((a) => `${a.data.label}: ${pct(Number(a.data.share))}`);
+        svg.selectAll('text.gw-slice').data(slices.filter((a) => Number(a.data.share) >= 0.07)).join('text').attr('class', 'gw-slice').attr('transform', (a) => `translate(${label.centroid(a)})`).attr('text-anchor', 'middle').attr('dy', '0.35em').attr('font-size', 11).attr('font-weight', 600).attr('fill', '#fff').text((a) => pct0(Number(a.data.share)));
+        svg.append('text').attr('text-anchor', 'middle').attr('dy', '-0.15em').attr('font-size', 20).attr('fill', 'var(--color-fg)').text(hasWeekly ? weekly(weeklyTotal) : big(total));
+        svg.append('text').attr('text-anchor', 'middle').attr('dy', '1.3em').attr('font-size', 10).attr('fill', 'var(--color-fg-muted)').text(hasWeekly ? 'מהמגבלה השבועית' : 'טוקנים משוקללים');
+        const sum = document.createElement('span');
+        sum.className = 'gw-pie-total';
+        sum.textContent = `${big(total)} טוקנים משוקללים`;
+        card.appendChild(sum);
+        if (parts[0].models) {
+          const used = document.createElement('span');
+          used.className = 'gw-pie-total';
+          used.textContent = `מודלים: ${parts[0].models}`;
+          card.appendChild(used);
+        }
+      }
+      const list = document.createElement('ul');
+      parts.forEach((r) => {
+        const li = document.createElement('li');
+        const sw = document.createElement('i');
+        sw.style.background = color(r);
+        const name = document.createElement('span');
+        name.textContent = r.label;
+        const value = document.createElement('b');
+        value.textContent = pct(Number(r.share));
+        const ofWeek = document.createElement('small');
+        ofWeek.textContent = `${weekly(r.weekly_share)} מהשבועי`;
+        li.append(sw, name, value, ofWeek);
+        list.appendChild(li);
+      });
+      card.appendChild(list);
+      box.appendChild(card);
+    });
+  };
+
+  const clock = (iso) => (iso ? new Date(iso).toLocaleString('he-IL', {weekday: 'short', hour: '2-digit', minute: '2-digit'}) : '—');
+  const left = (ms) => {
+    const m = Math.max(0, Math.round(ms / 60000));
+    return m >= 60 ? `${Math.floor(m / 60)} שע' ${m % 60} דק'` : `${m} דק'`;
+  };
+  const drawLive = () => {
+    const d = dash.data('liverun');
+    const box = document.getElementById('live-box');
+    if (!box) return;
+    box.textContent = '';
+    if (d.status === 'error') { settled(box); fail(box); return; }
+    if (d.status !== 'ok') return;
+    settled(box);
+    const r = (d.data || [])[0];
+    if (!r || !r.running) {
+      const p = document.createElement('p');
+      p.className = 'gw-note';
+      p.textContent = `אין ריצה של המשחק כרגע (נבדק ${clock(r && r.checked_at)}).`;
+      box.appendChild(p);
+      return;
+    }
+    const start = new Date(r.started_at).getTime();
+    const end = start + Number(r.duration_s) * 1000;
+    const now = Date.now();
+    const head = document.createElement('div');
+    head.className = 'gw-live-head';
+    const name = document.createElement('strong');
+    name.textContent = r.label;
+    const tag = document.createElement('span');
+    tag.className = 'gw-chip';
+    tag.textContent = r.tag;
+    head.append(name, tag);
+    if (r.aco_debug) {
+      const flag = document.createElement('span');
+      flag.className = 'gw-chip';
+      flag.textContent = 'ACO_DEBUG';
+      head.appendChild(flag);
+    }
+    const meterBox = document.createElement('div');
+    meterBox.className = 'gw-meter';
+    const fillEl = document.createElement('div');
+    fillEl.className = 'gw-meter-fill';
+    const part = Math.min(1, Math.max(0, (now - start) / (end - start)));
+    fillEl.style.width = `${(part * 100).toFixed(1)}%`;
+    meterBox.style.setProperty('--fill', 'var(--color-ok)');
+    const label = document.createElement('span');
+    label.className = 'gw-meter-label';
+    label.textContent = now >= end ? 'אמורה להסתיים עכשיו' : `נשארו ~${left(end - now)}`;
+    meterBox.append(fillEl, label);
+    const note = document.createElement('p');
+    note.className = 'gw-note';
+    note.textContent = `התחילה ${clock(r.started_at)}, אורך ${left(Number(r.duration_s) * 1000)}. ${Number(r.presents).toLocaleString('he-IL')} פריימים הוצגו עד ${clock(r.checked_at)}.`;
+    box.append(head, meterBox, note);
+  };
+  const drawSchedule = () => {
+    const d = dash.data('schedule');
+    const box = document.getElementById('schedule-box');
+    if (!box) return;
+    box.textContent = '';
+    if (d.status === 'error') { settled(box); fail(box); return; }
+    if (d.status !== 'ok') return;
+    settled(box);
+    (d.data || []).forEach((r) => {
+      const chip = document.createElement('span');
+      chip.className = 'gw-chip';
+      const name = document.createElement('span');
+      name.textContent = r.label;
+      const when = document.createElement('strong');
+      const ms = new Date(r.at).getTime() - Date.now();
+      when.textContent = ms > 0 ? `בעוד ${left(ms)} (${clock(r.at)})` : `עכשיו (${clock(r.at)})`;
+      chip.append(name, ' ', when);
+      box.appendChild(chip);
+    });
+  };
+  const drawUsageHistory = () => {
+    const d = dash.data('usage_history');
+    const box = document.getElementById('usage-chart');
+    const legend = document.getElementById('usage-legend');
+    if (!box) return;
+    box.textContent = '';
+    legend.textContent = '';
+    if (d.status === 'error') { settled(box); fail(box); return; }
+    if (d.status !== 'ok') return;
+    settled(box);
+    const rows = (d.data || []).map((r) => ({...r, t: new Date(r.at).getTime(), v: Number(r.percent_used)})).filter((r) => Number.isFinite(r.t));
+    if (!rows.length) return;
+    const series = [{limit: 'five_hour', label: 'מגבלת 5 השעות', color: dash.colors[0]}, {limit: 'weekly', label: 'מגבלה שבועית', color: dash.colors[1]}];
+    series.forEach((s) => {
+      const item = document.createElement('span');
+      const sw = document.createElement('i');
+      sw.style.background = s.color;
+      item.append(sw, document.createTextNode(s.label));
+      legend.appendChild(item);
+    });
+    const width = Math.max(280, box.clientWidth);
+    const height = 200;
+    const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${width} ${height}`).attr('role', 'img').attr('aria-label', 'אחוז שימוש לאורך היום');
+    const x = d3.scaleTime(d3.extent(rows, (r) => r.t), [36, width - 8]);
+    const y = d3.scaleLinear([0, 1], [height - 22, 8]);
+    [0, 0.25, 0.5, 0.75, 1].forEach((t) => {
+      svg.append('line').attr('x1', 36).attr('x2', width - 8).attr('y1', y(t)).attr('y2', y(t)).attr('stroke', 'var(--cds-chart-grid)');
+      svg.append('text').attr('x', 0).attr('y', y(t)).attr('dy', '0.32em').attr('font-size', 10).attr('fill', 'var(--color-fg-muted)').text(pct0(t));
+    });
+    x.ticks(5).forEach((t) => {
+      svg.append('text').attr('x', x(t)).attr('y', height - 4).attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', 'var(--color-fg-muted)').text(d3.timeFormat('%H:%M')(t));
+    });
+    series.forEach((s) => {
+      const points = rows.filter((r) => r.limit === s.limit).sort((a, b) => a.t - b.t);
+      d3.groups(points, (r) => String(r.resets_at).slice(0, 13)).forEach(([, seg]) => {
+        svg.append('path').datum(seg).attr('fill', 'none').attr('stroke', s.color).attr('stroke-width', 2).attr('d', d3.line().x((r) => x(r.t)).y((r) => y(r.v)));
+      });
+      svg.append('g').selectAll('circle').data(points).join('circle').attr('cx', (r) => x(r.t)).attr('cy', (r) => y(r.v)).attr('r', 3).attr('fill', s.color).append('title').text((r) => `${s.label}: ${pct0(r.v)} (${clock(r.at)})`);
+    });
+  };
+
+  const drawChart = () => {
+    const d = dash.data('runs');
+    const box = document.getElementById('fps-chart');
+    const legend = document.getElementById('fps-legend');
+    box.textContent = '';
+    legend.textContent = '';
+    if (d.status === 'error') { settled(box); fail(box); return; }
+    if (d.status !== 'ok') return;
+    settled(box);
+    const rows = (d.data || []).slice().sort((a, b) => String(a.ended).localeCompare(String(b.ended)));
+    const color = (k) => dash.colors[Math.max(0, kinds.indexOf(k))];
+    kinds.forEach((k) => {
+      const item = document.createElement('span');
+      const sw = document.createElement('i');
+      sw.style.background = color(k);
+      item.appendChild(sw);
+      item.appendChild(document.createTextNode(k));
+      legend.appendChild(item);
+    });
+    const width = Math.max(280, box.clientWidth);
+    const height = 240;
+    const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${width} ${height}`).attr('role', 'img').attr('aria-label', 'FPS ממוצע לכל ריצה');
+    const maxFps = d3.max(rows, (r) => Number(r.avg_fps)) || 1;
+    const y = d3.scaleLinear([0, maxFps * 1.1], [height - 24, 8]).nice();
+    const yAxis = svg.append('g');
+    const ticks = y.ticks(4);
+    yAxis.selectAll('text').data(ticks).join('text').attr('x', 0).attr('y', (t) => y(t)).attr('dy', '0.32em').attr('fill', 'var(--color-fg-muted)').attr('font-size', 11).text((t) => d3.format('.0f')(t));
+    let left = 0;
+    yAxis.selectAll('text').each(function () { left = Math.max(left, this.getComputedTextLength()); });
+    left += 8;
+    svg.insert('g', ':first-child').selectAll('line').data(ticks).join('line').attr('x1', left).attr('x2', width).attr('y1', (t) => y(t)).attr('y2', (t) => y(t)).attr('stroke', 'var(--cds-chart-grid)').attr('stroke-width', 1);
+    const x = d3.scaleBand(rows.map((r) => r.run), [left, width]).padding(0.25);
+    const tip = document.createElement('div');
+    tip.className = 'gw-tip';
+    tip.hidden = true;
+    box.appendChild(tip);
+    svg.append('g').selectAll('rect').data(rows).join('rect')
+      .attr('x', (r) => x(r.run)).attr('width', x.bandwidth())
+      .attr('y', (r) => y(Number(r.avg_fps))).attr('height', (r) => Math.max(1, y(0) - y(Number(r.avg_fps))))
+      .attr('rx', Math.min(4, x.bandwidth() / 2)).attr('fill', (r) => color(r.kind))
+      .on('mousemove', function (event, r) {
+        tip.hidden = false;
+        tip.textContent = '';
+        const head = document.createElement('div');
+        head.className = 'gw-tipdate';
+        head.textContent = `ריצה ${r.run} · ${r.ended}`;
+        const line = document.createElement('div');
+        line.textContent = `ממוצע ${fps(r.avg_fps)} · 1% low ${fps(r.low1_fps)} · 1% high ${fps(r.high1_fps)}`;
+        tip.appendChild(head);
+        tip.appendChild(line);
+        const [mx, my] = d3.pointer(event, box);
+        const w = tip.offsetWidth;
+        tip.style.left = `${Math.min(Math.max(0, mx - w / 2), box.clientWidth - w)}px`;
+        tip.style.top = `${Math.max(0, my - 52)}px`;
+        d3.select(this).attr('opacity', 0.8);
+      })
+      .on('mouseleave', function () { tip.hidden = true; d3.select(this).attr('opacity', 1); });
+    svg.append('line').attr('x1', left).attr('x2', width).attr('y1', y(0)).attr('y2', y(0)).attr('stroke', 'var(--cds-chart-axis)').attr('stroke-width', 1);
+    const first = rows[0];
+    const last = rows[rows.length - 1];
+    if (first && last) {
+      svg.append('text').attr('x', left).attr('y', height - 6).attr('fill', 'var(--color-fg-muted)').attr('font-size', 11).text(String(first.ended).slice(5, 16));
+      svg.append('text').attr('x', width).attr('y', height - 6).attr('text-anchor', 'end').attr('fill', 'var(--color-fg-muted)').attr('font-size', 11).text(String(last.ended).slice(5, 16));
+    }
+  };
+
+  const drawFrames = () => {
+    const d = dash.data('frames');
+    const grid = document.getElementById('frame-grid');
+    grid.textContent = '';
+    if (d.status === 'error') { settled(grid); fail(grid); return; }
+    if (d.status !== 'ok') return;
+    settled(grid);
+    (d.data || []).forEach((row, i) => {
+      const fig = document.createElement('figure');
+      fig.className = 'gw-frame';
+      const img = document.createElement('img');
+      if (typeof row.image === 'string' && row.image.startsWith('data:image/')) img.src = row.image;
+      img.alt = `פריים ${row.frame} מריצה ${row.run}`;
+      img.loading = 'lazy';
+      const cap = document.createElement('figcaption');
+      const name = document.createElement('span');
+      name.textContent = `פריים ${row.frame}`;
+      const rate = document.createElement('span');
+      const value = document.createElement('span');
+      value.dataset.source = 'frames';
+      value.dataset.field = 'fps';
+      value.dataset.row = String(i);
+      value.textContent = row.fps === null || row.fps === undefined ? '—' : d3.format('.1f')(Number(row.fps));
+      rate.appendChild(value);
+      rate.appendChild(document.createTextNode(row.fps === null || row.fps === undefined ? ' FPS לא נמדד' : ' FPS'));
+      cap.appendChild(name);
+      cap.appendChild(rate);
+      fig.appendChild(img);
+      fig.appendChild(cap);
+      grid.appendChild(fig);
+    });
+  };
+
+  dash.onData(window.gwRedraw = () => {
+    fill('status', {updated: (v) => (v ? new Date(v).toLocaleString('he-IL', {dateStyle: 'short', timeStyle: 'short'}) : '—'), session_at: (v) => (v ? new Date(v).toLocaleString('he-IL', {dateStyle: 'short', timeStyle: 'short'}) : '—')});
+    fill('fixes_summary', {fixes: (v) => count(Number(v)), libraries: (v) => count(Number(v))});
+    fill('functions_summary', {progress_count: (v) => `+${count(Number(v))}`, functions: (v) => count(Number(v)), libraries: (v) => count(Number(v))});
+    fill('coverage', {implemented: (v) => count(Number(v)), total: (v) => count(Number(v))});
+    fill('graphics_progress', {percent: (v) => pct0(Number(v))});
+    fill('last_run', {avg_fps: fps, low1_fps: fps, high1_fps: fps});
+    fill('process');
+    fill('process_progress', {done: (v) => count(Number(v)), total: (v) => count(Number(v)), percent: (v) => pct0(Number(v))});
+    fill('fps_goal', {percent: (v) => pct0(Number(v))});
+    fill('coverage_pct', {pct: (v) => pct(Number(v))});
+    const resetText = (iso) => {
+      if (!iso) return '—';
+      const at = new Date(iso);
+      const left = Math.max(0, at.getTime() - Date.now());
+      const days = Math.floor(left / 86400000);
+      const hours = Math.floor((left % 86400000) / 3600000);
+      const minutes = Math.floor((left % 3600000) / 60000);
+      const span = days > 0 ? `${days} ימים ו-${hours} שעות` : hours > 0 ? `${hours} שעות ו-${minutes} דקות` : `${minutes} דקות`;
+      const when = at.toLocaleString('he-IL', {weekday: days > 0 ? 'short' : undefined, day: days > 0 ? 'numeric' : undefined, month: days > 0 ? 'numeric' : undefined, hour: '2-digit', minute: '2-digit'});
+      return left === 0 ? `כבר התאפסה (${when}); מחכה למדידה הבאה` : `בעוד ${span} (${when})`;
+    };
+    fill('tokens', {measured_at: (v) => (v ? new Date(v).toLocaleString('he-IL', {dateStyle: 'short', timeStyle: 'short'}) : '—')});
+    fill('usage', {percent_used: (v) => pct0(Number(v)), resets_at: resetText, measured_at: (v) => (v ? new Date(v).toLocaleString('he-IL', {dateStyle: 'short', timeStyle: 'short'}) : '—')});
+    const usageColor = (name) => {
+      const u = dash.data('usage');
+      const row = u.status === 'ok' ? (u.data || []).find((r) => r.limit === name) : null;
+      const used = row ? Number(row.percent_used) : 0;
+      return used >= 0.85 ? 'var(--color-bad)' : used >= 0.65 ? 'var(--color-warn)' : 'var(--color-ok)';
+    };
+    const hintRate = (row) => (Number(row.rate_hint) > 0 ? Number(row.rate_hint) / 1000 : 0);
+    const estimate = (row) => {
+      const used = Number(row.percent_used);
+      const measured = new Date(row.measured_at).getTime();
+      let rate = 0;
+      if (row.previous_used !== null && row.previous_used !== undefined && row.previous_at) {
+        const span = measured - new Date(row.previous_at).getTime();
+        if (span > 0) rate = Math.max(0, (used - Number(row.previous_used)) / span);
+      }
+      if (!(rate > 0)) rate = hintRate(row);
+      if (!(rate > 0)) return {value: used, estimated: false};
+      const end = Math.min(Date.now(), new Date(row.resets_at).getTime());
+      const value = Math.min(1, used + rate * Math.max(0, end - measured));
+      return {value, estimated: value > used + 0.0005};
+    };
+    const drawUsage = () => {
+      const u = dash.data('usage');
+      if (u.status !== 'ok') return;
+      (u.data || []).forEach((row) => {
+        const box = document.querySelector(`[data-meter="${row.limit}"]`);
+        if (!box) return;
+        const reset = new Date(row.resets_at).getTime() <= Date.now();
+        const {value, estimated} = reset ? {value: Math.min(1, hintRate(row) * (Date.now() - new Date(row.resets_at).getTime())), estimated: true} : estimate(row);
+        const label = box.querySelector('.gw-meter-label');
+        label.textContent = `${estimated ? '~' : ''}נוצל ${pct0(value)}`;
+        box.style.setProperty('--fill', value >= 0.85 ? 'var(--color-bad)' : value >= 0.65 ? 'var(--color-warn)' : 'var(--color-ok)');
+        box.setAttribute('aria-valuenow', String(Math.round(value * 100)));
+        box.querySelector('.gw-meter-fill').style.width = `${(value * 100).toFixed(1)}%`;
+      });
+    };
+    meter('five_hour', 'usage', 'percent_used', ['limit', 'five_hour'], usageColor('five_hour'), null);
+    meter('weekly', 'usage', 'percent_used', ['limit', 'weekly'], usageColor('weekly'), null);
+    drawUsage();
+    if (!window.gwUsageTimer) window.gwUsageTimer = setInterval(drawUsage, 60000);
+    if (!window.gwResetTimer) {
+      window.gwResetTimer = setInterval(() => {
+        const u = dash.data('usage');
+        if (u.status !== 'ok') return;
+        document.querySelectorAll('[data-reset]').forEach((el) => {
+          const row = (u.data || []).find((r) => r.limit === el.dataset.reset);
+          if (row) el.textContent = resetText(row.resets_at);
+        });
+      }, 30000);
+    }
+    meter('map', 'map_progress', 'percent', null, dash.colors[4] || dash.colors[0]);
+    meter('graphics', 'graphics_progress', 'percent', null, dash.colors[0]);
+    meter('process', 'process_progress', 'percent', null, dash.colors[1]);
+    meter('fps', 'fps_goal', 'percent', null, dash.colors[2]);
+    meter('libs', 'coverage_pct', 'pct', ['point', 'main היום (progress.html)'], dash.colors[3], null);
+    const pp = dash.data('process_progress');
+    if (pp.status === 'ok' && pp.data && pp.data[0]) {
+      const line = document.getElementById('steps-line');
+      requestAnimationFrame(() => { line.style.width = `${(Number(pp.data[0].percent) * 100).toFixed(1)}%`; });
+    }
+    drawSteps();
+    drawChart();
+    drawFrames();
+    drawPies();
+    drawLive();
+    drawSchedule();
+    drawUsageHistory();
+    if (!window.gwLiveTimer) window.gwLiveTimer = setInterval(() => { drawLive(); drawSchedule(); }, 30000);
+    const dailyClass = (v) => (String(v).startsWith('תוקן') ? 'open' : String(v).startsWith('חסום') ? 'ruled' : 'testing');
+    table('daily', [
+      {field: 'date'},
+      {field: 'status', render: (td, r) => { const b = document.createElement('span'); b.className = `gw-st ${dailyClass(r.status)}`; b.textContent = r.status; td.appendChild(b); }},
+      {field: 'summary'}, {field: 'new_libs'}, {field: 'tests'}, {field: 'blockers'}, {field: 'next'}
+    ]);
+    if (!window.gwTabsReady) {
+      window.gwTabsReady = true;
+      const show = (page) => {
+        document.querySelectorAll('.gw > [data-page]').forEach((el) => { el.hidden = el.dataset.page !== page; });
+        document.querySelectorAll('.gw-tab').forEach((o) => o.setAttribute('aria-selected', String(o.dataset.tab === page)));
+      };
+      document.querySelectorAll('.gw-tab').forEach((b) => b.addEventListener('click', () => { show(b.dataset.tab); window.dispatchEvent(new Event('resize')); if (window.gwRedraw) window.gwRedraw(); }));
+      show('overview');
+    }
+    const statusClass = (v) => (String(v).startsWith('נפסלה') ? 'ruled' : v === 'בבדיקה' ? 'testing' : 'open');
+    table('hypotheses', [
+      {field: 'status', render: (td, r) => { const b = document.createElement('span'); b.className = `gw-st ${statusClass(r.status)}`; b.textContent = r.status; td.appendChild(b); }},
+      {field: 'name'}, {field: 'evidence'}, {field: 'date'}
+    ]);
+    const badRows = dash.data('badframes');
+    const maxBad = badRows.status === 'ok' ? Math.max(1, d3.max(badRows.data || [], (r) => Number(r.bad)) || 1) : 1;
+    table('badframes', [
+      {field: 'label'},
+      {field: 'bad', render: (td, r) => {
+        const wrap = document.createElement('div');
+        wrap.className = 'gw-badbar';
+        const bar = document.createElement('div');
+        bar.className = 'gw-bar';
+        const fillBar = document.createElement('b');
+        fillBar.className = Number(r.bad) === 0 ? 'zero' : r.kind === 'base' ? 'base' : 'exp';
+        fillBar.style.width = `${Math.max(2, (Number(r.bad) / maxBad) * 100)}%`;
+        bar.appendChild(fillBar);
+        const n = document.createElement('span');
+        n.textContent = String(r.bad);
+        wrap.append(bar, n);
+        td.appendChild(wrap);
+      }},
+      {field: 'max_score', num: true, render: (td, r) => { td.textContent = d3.format('.1f')(Number(r.max_score)); }},
+      {field: 'frames', num: true}
+    ]);
+    table('branches', [
+      {field: 'branch'}, {field: 'title', render: (td, r) => { td.textContent = r.title || '—'; }},
+      {field: 'commits', num: true},
+      {field: 'in_integration', render: (td, r) => { td.textContent = r.in_integration ? 'כן' : 'לא'; }},
+      {field: 'pr_ready', render: (td, r) => { td.textContent = r.pr_ready ? r.pr_text : 'אין'; }}
+    ]);
+    table('runs', [
+      {field: 'run'}, {field: 'kind'}, {field: 'ended'},
+      {field: 'seconds', num: true, render: (td, r) => { td.textContent = count(Number(r.seconds)); }},
+      {field: 'presents', num: true, render: (td, r) => { td.textContent = count(Number(r.presents)); }},
+      {field: 'avg_fps', num: true, render: (td, r) => { td.textContent = fps(r.avg_fps); }},
+      {field: 'low1_fps', num: true, render: (td, r) => { td.textContent = fps(r.low1_fps); }},
+      {field: 'high1_fps', num: true, render: (td, r) => { td.textContent = fps(r.high1_fps); }}
+    ]);
+    table('graphics', [
+      {field: 'issue'},
+      {field: 'weight', num: true},
+      {field: 'status', render: (td, r) => {
+        const wrap = document.createElement('div');
+        wrap.style.display = 'flex';
+        wrap.style.alignItems = 'center';
+        wrap.style.gap = '.5rem';
+        const bar = document.createElement('div');
+        bar.className = 'gw-bar' + (Number(r.status) >= 1 ? ' full' : '');
+        bar.style.flex = '1';
+        const b = document.createElement('b');
+        b.style.width = `${Math.round(Number(r.status) * 100)}%`;
+        bar.appendChild(b);
+        const label = document.createElement('span');
+        label.textContent = pct0(Number(r.status));
+        wrap.appendChild(bar);
+        wrap.appendChild(label);
+        td.appendChild(wrap);
+      }},
+      {field: 'note'}
+    ]);
+    table('fixes', [{field: 'fix'}, {field: 'library'}, {field: 'kind'}, {field: 'state', render: (td, r) => { const p = document.createElement('span'); p.className = 'gw-pill'; p.textContent = r.state; td.appendChild(p); }}]);
+    table('functions', [
+      {field: 'library'}, {field: 'what'},
+      {field: 'functions', num: true, render: (td, r) => { td.textContent = count(Number(r.functions)); }},
+      {field: 'progress_count', num: true, render: (td, r) => { td.textContent = `+${count(Number(r.progress_count))}`; }},
+      {field: 'branch'},
+      {field: 'state', render: (td, r) => { const p = document.createElement('span'); p.className = 'gw-pill'; p.textContent = r.state; td.appendChild(p); }}
+    ]);
+    const coverage = table('coverage', [
+      {field: 'point'}, {field: 'commit'}, {field: 'date'},
+      {field: 'implemented', num: true, render: (td, r) => { td.textContent = count(Number(r.implemented)); }},
+      {field: 'total', num: true, render: (td, r) => { td.textContent = count(Number(r.total)); }},
+      {field: 'pct', num: true, render: (td, r) => {
+        const share = dash.data('coverage_pct');
+        const hit = share.status === 'ok' ? (share.data || []).find((s) => s.point === r.point) : null;
+        td.textContent = hit ? pct(Number(hit.pct)) : '—';
+      }}
+    ]);
+    void coverage;
+  });
+})();
+</script>
