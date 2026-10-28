@@ -850,6 +850,7 @@ dash.calc('fps_goal', {
     fill('fixes_summary', {fixes: (v) => count(Number(v)), libraries: (v) => count(Number(v))});
     fill('functions_summary', {progress_count: (v) => `+${count(Number(v))}`, functions: (v) => count(Number(v)), libraries: (v) => count(Number(v))});
     fill('coverage', {implemented: (v) => count(Number(v)), total: (v) => count(Number(v))});
+    fill('map_progress', {percent: (v) => pct(Number(v))});
     fill('graphics_progress', {percent: (v) => pct0(Number(v))});
     fill('last_run', {avg_fps: fps, low1_fps: fps, high1_fps: fps});
     fill('process');
