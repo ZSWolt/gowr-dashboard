@@ -142,7 +142,7 @@
     <h2>התקדמות</h2>
     <p class="gw-note" id="progress-updated">עודכן לאחרונה: <span data-source="status" data-field="updated_label" data-row="0">—</span></p>
     <div class="gw-meter-row">
-      <div class="gw-meter-name"><strong>טעינת המפה</strong><small>הושלם: <span data-source="map_progress" data-field="done" data-row="0">—</span></small><small>חסר: <span data-source="map_progress" data-field="missing" data-row="0">—</span></small></div>
+      <div class="gw-meter-name"><strong>טעינת המפה</strong><small>חסר: <span data-source="map_progress" data-field="missing" data-row="0">—</span></small></div>
       <div class="gw-meter gw-hero" data-meter="map" role="progressbar" aria-label="טעינת המפה" aria-valuemin="0" aria-valuemax="100"><div class="gw-meter-fill"></div><span class="gw-meter-label dash-skeleton" data-source="map_progress" data-field="percent" data-row="0">—</span></div>
     </div>
     <div class="gw-meter-row">
@@ -397,11 +397,9 @@ dash.calc('map_progress', {
   fn: (map) => {
     const total = d3.sum(map, (m) => Number(m.weight));
     const done = d3.sum(map, (m) => Number(m.weight) * Number(m.status));
-    const share = (m) => total ? Math.round(100 * Number(m.weight) / total) : 0;
-    const part = (m) => `${m.item} (${Math.round(100 * Number(m.weight) * Number(m.status) / (total || 1))}% מתוך ${share(m)}%)`;
-    const missing = map.filter((m) => Number(m.status) < 1).map(part).join(' · ');
-    const finished = map.filter((m) => Number(m.status) >= 1).map(part).join(' · ');
-    return [{percent: total ? done / total : 0, missing: missing || 'כלום', done: finished || 'כלום'}];
+    const share = (m) => total ? Math.round(100 * Number(m.weight) * (1 - Number(m.status)) / total) : 0;
+    const missing = map.filter((m) => Number(m.status) < 1).map((m) => `${m.label || m.item} (${share(m)}%)`).join(' · ');
+    return [{percent: total ? done / total : 0, missing: missing || 'כלום'}];
   }
 });
 dash.calc('fixes_summary', {
